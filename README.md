@@ -18,7 +18,13 @@ Please visit this [link](https://www.youtube.com/watch?v=2w-2MX5QrQw&ab_channel=
 
 Switch to root and its environment via : `su -`.
 
-	$>su - Password:
+	$>su -
+	$>Password:
+
+It is advisable to install _vim_ for this tutorial, for commands that will use _vi_, use _vim_ instead.
+
+	$>apt-get update
+	$>apt-get install vim
 
 Install _sudo_ via `apt install sudo`.
 
@@ -42,9 +48,145 @@ Verify whether user was successfully added to sudo group via `getent group sudo`
 
 	$>getent group sudo
 
-`reboot` for changes to take effect, then log in and verify sudopowers via `sudo -v`.
+`reboot` for changes to take effect, then log in and verify `sudopowers` via `sudo -v`.
 
-## reboot
+	$>reboot
+
+	<--->
+	Debian GNU/Linux 10 <hostname> tty1
+
+	$><hostname> login: <username>
+	$>Password: <password>
+	<--->
+
+	$>sudo -v
+	$>[sudo] password for <username>: <password>
+
+### Step 3: Running root-Privileged Commands
+
+From here on out, run root-privileged commands via prefix `sudo`. For instance:
+
+	$>sudo apt update
+
+### Step 4: Configuring sudo
+
+Configure _sudo_ via `sudo vi /etc/sudoers.d/<filename>`. `<filename>` shall not end in `~` or contain `.`.
+
+	$>sudo vi /etc/sudoers.d/<filename>
+
+To limit authentication using sudo to 3 attempts (defaults to 3 anyway) in the event of an incorrect password, add below line to the file.
+
+	Defaults        passwd_tries=3
+
+To add a custom error message in the event of an incorrect password:
+
+	Defaults        badpass_message="<custom-error-message>"
+
+To log all _sudo_ commands to `/var/log/sudo/<filename>`:
+
+	$>sudo mkdir /var/log/sudo
+	<~~~>
+	Defaults        logfile="/var/log/sudo/<filename>"
+	<~~~>
+
+To archive all _sudo_ inputs & outputs to `/var/log/sudo/`:
+
+	Defaults        log_input,log_output
+	Defaults        iolog_dir="/var/log/sudo"
+
+To require TTY:
+
+	Defaults        requiretty
+
+To set _sudo_ paths to `/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin`:
+
+	Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+
+## SSH
+
+### Step 1: Installing & Configuring SSH
+
+Install _openssh-server_ via `sudo apt install openssh-server`.
+
+	$>sudo apt install openssh-server
+
+Verify whether openssh-server was successfully installed via `dpkg -l | grep ssh`.
+
+	$>dpkg -l | grep ssh
+
+Configure SSH via `sudo vi /etc/ssh/sshd_config`.
+
+	$>sudo vi /etc/ssh/sshd_config
+
+To set up SSH using Port 4242, replace below line:
+
+	line13 #Port 22
+
+with:
+
+	line13 Port 4242
+
+To disable SSH login as root irregardless of authentication mechanism, replace below line
+
+	line32 #PermitRootLogin prohibit-password
+
+with:
+
+	line32 PermitRootLogin no
+
+Check SSH status via `sudo service ssh status`.
+
+	$>sudo service ssh status
+
+Alternatively, check SSH status via `systemctl status ssh`.
+
+	$>systemctl status ssh
+
+### Step 2: Installing & Configuring UFW
+
+Install _ufw_ via `sudo apt install ufw`.
+
+	$>sudo apt install ufw
+
+Verify whether ufw was successfully installed via `dpkg -l | grep ufw`.
+
+	$>dpkg -l | grep ufw
+
+Enable Firewall via `sudo ufw enable`.
+
+	$>sudo ufw enable
+
+Allow incoming connections using Port 4242 via `sudo ufw allow 4242`.
+
+	$>sudo ufw allow 4242
+
+Check UFW status via `sudo ufw status`.
+
+	$>sudo ufw status
+
+### XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+### Step 3: Connecting to Server via SSH
+
+SSH into your virtual machine using Port 4242 via `ssh <username>@<ip-address> -p 4242`.
+
+	$>ssh <username>@<ip-address> -p 4242
+
+Terminate SSH session at any time via `logout`.
+
+	$>logout
+
+Alternatively, terminate SSH session via `exit`.
+
+	$>exit
+
+## User Management
+
+
+
+
+
+
 
 
 
