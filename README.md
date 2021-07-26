@@ -164,8 +164,6 @@ Check UFW status via `sudo ufw status`.
 
 	$>sudo ufw status
 
-### XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 ### Step 3: Connecting to Server via SSH
 
 SSH into your virtual machine using Port 4242 via `ssh <username>@<ip-address> -p 4242`.
@@ -182,8 +180,218 @@ Alternatively, terminate SSH session via `exit`.
 
 ## User Management
 
+### Step 1: Setting Up a Strong Password Policy
 
+#### Password Age
 
+Configure password age policy via `sudo vi /etc/login.defs`.
+
+	$>sudo vi /etc/login.defs
+
+To set password to expire every 30 days, replace below line
+
+	line160 PASS_MAX_DAYS   99999
+
+with:
+
+	line160 PASS_MAX_DAYS   30
+
+To set minimum number of days between password changes to 2 days, replace below line
+
+	line161 PASS_MIN_DAYS   0
+
+with:
+
+	line161 PASS_MIN_DAYS   2
+
+To send user a warning message 7 days _(defaults to 7 anyway)_ before password expiry, keep below line as is.
+
+	line162 PASS_WARN_AGE   7
+
+#### Password Strength
+
+Secondly, to set up policies in relation to password strength, install the _libpam-pwquality_ package.
+
+	$>sudo apt install libpam-pwquality
+
+Verify whether _libpam-pwquality_ was successfully installed via `dpkg -l | grep libpam-pwquality`.
+
+	$>dpkg -l | grep libpam-pwquality
+
+Configure password strength policy via `sudo vi /etc/pam.d/common-password`, specifically the below line:
+
+	$>sudo vi /etc/pam.d/common-password
+	<~~~>
+	line25 password        requisite                       pam_pwquality.so retry=3
+	<~~~>
+
+To set password minimum length to 10 characters, add below option to the above line.
+
+	minlen=10
+
+To require password to contain at least an uppercase character and a numeric character:
+
+	ucredit=-1 dcredit=-1
+
+To set a maximum of 3 consecutive identical characters:
+
+	maxrepeat=3
+
+To reject the password if it contains `<username>` in some form:
+
+	reject_username
+
+To set the number of changes required in the new password from the old password to 7:
+
+	difok=7
+
+To implement the same policy on _root_:
+
+	enforce_for_root
+
+Finally, it should look like the below:
+
+	password        requisite                       pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+
+### Step 2: Creating a New User
+
+Create new user via `sudo adduser <username>`.
+
+	$>sudo adduser new_user
+
+Verify whether user was successfully created via `getent passwd <username>`.
+
+	$>getent passwd <username>
+
+Verify newly-created user's password expiry information via `sudo chage -l <username>`.
+
+	$ sudo chage -l <username>
+	Last password change								: <last-password-change-date>
+	Password expires									: <last-password-change-date + PASS_MAX_DAYS>
+	Password inactive									: never
+	Account expires										: never
+	Minimum number of days between password change		: <PASS_MIN_DAYS>
+	Maximum number of days between password change		: <PASS_MAX_DAYS>
+	Number of days of warning before password expires	: <PASS_WARN_AGE>
+
+### Step 3: Creating a New Group
+
+Create new _user42_ group via `sudo addgroup user42`.
+
+	$>sudo addgroup user42
+
+Add user to _user42_ group via `sudo adduser <username> user42`.
+
+	$>sudo adduser <username> user42
+
+Alternatively, add user to _user42_ group via `sudo usermod -aG user42 <username>`.
+
+	$>sudo usermod -aG user42 <username>
+
+Verify whether user was successfully added to _user42_ group via `getent group user42`.
+
+	$>getent group user42
+
+## cron
+
+#### Setting Up a cron Job
+
+#### For this part check the monitoring.sh file
+
+Configure _cron_ as _root_ via `sudo crontab -u root -e`.
+
+	$>sudo crontab -u root -e
+
+To schedule a shell script to run every 10 minutes, replace below line
+
+	line23 # m h  dom mon dow   command
+
+with:
+
+	line23 */10 * * * * bash /path/to/script | wall
+
+Check root's scheduled cron jobs via `sudo crontab -u root -l`.
+
+	$>sudo crontab -u root -l
+
+# Bonus
+
+## Linux Lighttpd MariaDB PHP (LLMP) Stack
+
+### Step 1: Installing Lighttpd
+
+Install _lighttpd_ via `sudo apt install lighttpd`.
+
+	&>sudo apt install lighttpd
+
+Verify whether _lighttpd_ was successfully installed via `dpkg -l | grep lighttpd`.
+
+	$>dpkg -l | grep lighttpd
+
+Allow incoming connections using Port 80 via `sudo ufw allow 80`.
+
+	$>sudo ufw allow 80
+
+### Step 2: Installing & Configuring MariaDB
+
+Install _mariadb-server_ via `sudo apt install mariadb-server`.
+
+	$>sudo apt install mariadb-server
+
+Verify whether _mariadb-server_ was successfully installed via `dpkg -l | grep mariadb-server`.
+
+	$>dpkg -l | grep mariadb-server
+
+Start interactive script to remove insecure default settings via `sudo mysql_secure_installation`.
+
+	$>sudo mysql_secure_installation
+	Enter current password for root (enter for none): #Just press Enter (do not confuse database root with system root)
+	Set root password? [Y/n] n
+	Remove anonymous users? [Y/n] Y
+	Disallow root login remotely? [Y/n] Y
+	Remove test database and access to it? [Y/n] Y
+	Reload privilege tables now? [Y/n] Y
+
+Log in to the MariaDB console via `sudo mariadb`.
+
+	$>sudo mariadb
+	MariaDB [(none)]>
+
+Create new database via `CREATE DATABASE <database-name>;`.
+
+	MariaDB [(none)]> CREATE DATABASE <database-name>;
+
+Create new database user and grant them full privileges on the newly-created database via `GRANT ALL ON <database-name>.* TO '<username-2>'@'localhost' IDENTIFIED BY '<password-2>' WITH GRANT OPTION;`.
+
+	MariaDB [(none)]> GRANT ALL ON <database-name>.* TO '<username-2>'@'localhost' IDENTIFIED BY '<password-2>' WITH GRANT OPTION;
+
+Flush the privileges via `FLUSH PRIVILEGES;`.
+
+	MariaDB [(none)]> FLUSH PRIVILEGES;
+
+Exit the MariaDB shell via `exit`.
+
+	MariaDB [(none)]> exit
+
+Verify whether database user was successfully created by logging in to the MariaDB console via `mariadb -u <username-2> -p`.
+
+	$ mariadb -u <username-2> -p
+	Enter password: <password-2>
+	MariaDB [(none)]>
+
+Confirm whether database user has access to the database via `SHOW DATABASES;`.
+
+	MariaDB [(none)]> SHOW DATABASES;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| <database-name>    |
+	| information_schema |
+	+--------------------+
+
+Exit the MariaDB shell via `exit`.
+
+	MariaDB [(none)]> exit
 
 
 
