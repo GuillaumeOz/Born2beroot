@@ -4,13 +4,13 @@ This project aims to introduce you to the world of virtualization.
 
 Take your time for truly understand the purpose of each commands.
 
-Thanks to hbaddrul for this tutorial.
-
 ## Installation
 
 The latest stable version of Debian is Debian 10 Buster. Download latest debian version on this [link](https://www.debian.org/).
 
 Please visit this [link](https://www.youtube.com/watch?v=2w-2MX5QrQw&ab_channel=hanshazairi) for watching a Virtual Machine installation walkthrough.
+
+Thanks to hbaddrul for this tutorial.
 
 ## sudo
 
@@ -266,10 +266,10 @@ Verify whether user was successfully created via `getent passwd <username>`.
 Verify newly-created user's password expiry information via `sudo chage -l <username>`.
 
 	$ sudo chage -l <username>
-	Last password change								: <last-password-change-date>
-	Password expires									: <last-password-change-date + PASS_MAX_DAYS>
-	Password inactive									: never
-	Account expires										: never
+	Last password change					: <last-password-change-date>
+	Password expires					: <last-password-change-date + PASS_MAX_DAYS>
+	Password inactive					: never
+	Account expires						: never
 	Minimum number of days between password change		: <PASS_MIN_DAYS>
 	Maximum number of days between password change		: <PASS_MAX_DAYS>
 	Number of days of warning before password expires	: <PASS_WARN_AGE>
@@ -393,14 +393,140 @@ Exit the MariaDB shell via `exit`.
 
 	MariaDB [(none)]> exit
 
+### Step 3: Installing PHP
 
+Install _php-cgi_ & _php-mysql_ via `sudo apt install php-cgi php-mysql`.
 
+	$>sudo apt install php-cgi php-mysql
 
+Verify whether _php-cgi_ & _php-mysql_ was successfully installed via `dpkg -l | grep php`.
 
+	$>dpkg -l | grep php
 
+### Step 4: Downloading & Configuring WordPress
 
+Install _wget_ via `sudo apt install wget`.
 
+	$>sudo apt install wget
 
+Download WordPress to `/var/www/html` via `sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html`.
+
+	$>sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
+
+Extract downloaded content via `sudo tar -xzvf /var/www/html/latest.tar.gz`.
+
+	$>sudo tar -xzvf /var/www/html/latest.tar.gz
+
+Remove tarball via `sudo rm /var/www/html/latest.tar.gz`.
+
+	$>sudo rm /var/www/html/latest.tar.gz
+
+Copy content of `/var/www/html/wordpress` to `/var/www/html` via `sudo cp -r /var/www/html/wordpress/* /var/www/html`.
+
+	$>sudo cp -r /var/www/html/wordpress/* /var/www/html
+
+Remove `/var/www/html/wordpress` via `sudo rm -rf /var/www/html/wordpress`
+
+	$>sudo rm -rf /var/www/html/wordpress
+
+Create WordPress configuration file from its sample via `sudo cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php`.
+
+	$>sudo cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+
+Configure WordPress to reference previously-created MariaDB database & user via `sudo vi /var/www/html/wp-config.php`.
+
+	$>sudo vi /var/www/html/wp-config.php
+
+Replace the below
+
+	line23 define( 'DB_NAME', 'database_name_here' );^M
+	line26 define( 'DB_USER', 'username_here' );^M
+	line29 define( 'DB_PASSWORD', 'password_here' );^M
+
+with:
+
+	line23 define( 'DB_NAME', '<database-name>' );^M
+	line26 define( 'DB_USER', '<username-2>' );^M
+	line29 define( 'DB_PASSWORD', '<password-2>' );^M
+
+### Step 5: Configuring Lighttpd
+
+Enable below modules via `sudo lighty-enable-mod fastcgi; sudo lighty-enable-mod fastcgi-php; sudo service lighttpd force-reload`.
+
+	$>sudo lighty-enable-mod fastcgi
+	$>sudo lighty-enable-mod fastcgi-php
+	$>sudo service lighttpd force-reload
+
+## 3: File Transfer Protocol (FTP)
+
+### Step 1: Installing & Configuring FTP
+
+Install FTP server via `sudo apt install vsftpd`.
+
+	$>sudo apt install vsftpd
+
+Verify whether _vsftpd_ was successfully installed via `dpkg -l | grep vsftpd`.
+
+	$>dpkg -l | grep vsftpd
+
+Install FTP client via `sudo apt install ftp`.
+
+	$>sudo apt install ftp
+
+Verify whether _ftp_ was successfully installed via `dpkg -l | grep ftp`.
+
+	$>dpkg -l | grep ftp
+
+Allow incoming connections using Port 21 via `sudo ufw allow 21`.
+
+	$>sudo ufw allow 21
+
+Configure _vsftpd_ via `sudo vi /etc/vsftpd.conf`.
+
+	$>sudo vi /etc/vsftpd.conf
+
+To enable any form of FTP write command, uncomment below line:
+
+	line31 #write_enable=YES
+
+To set root folder for FTP-connected user to `/home/<username>/ftp`, add below lines:
+
+	$>sudo mkdir /home/<username>/ftp
+	$>sudo mkdir /home/<username>/ftp/files
+	$>sudo chown nobody:nogroup /home/<username>/ftp
+	$>sudo chmod a-w /home/<username>/ftp
+	<~~~>
+	user_sub_token=$USER
+	local_root=/home/$USER/ftp
+	<~~~>
+
+To prevent user from accessing files or using commands outside the directory tree, uncomment below line:
+
+	line114 #chroot_local_user=YES
+
+To whitelist FTP, add below lines:
+
+	$>sudo vi /etc/vsftpd.userlist
+	$>echo <username> | sudo tee -a /etc/vsftpd.userlist
+	<~~~>
+	userlist_enable=YES
+	userlist_file=/etc/vsftpd.userlist
+	userlist_deny=NO
+	<~~~>
+
+### Step 2: Connecting to Server via FTP
+
+FTP into your virtual machine via `ftp <ip-address>`.
+
+	$>ftp <ip-address>
+
+Terminate FTP session at any time via `CTRL + D`.
+
+## Difference Between CentOS and Debian
+
+CentOS vs Debian are two flavors of Linux operating systems. CentOS, as said above, is a Linux distribution. It is free and open-source. It is enterprise-class – industries can use meaning for server building; it is supported by a large community and is functionally supported by its upstream source, Red Hat Enterprise Linux. Debian is a Unix like computer operating system that is made up of open source components. It is built and supported by a group of individuals who are under the Debian project.
+
+Debian uses Linux as its Kernel. Fedora, CentOS, Oracle Linux are all different distribution from Red Hat Linux and are variant of RedHat Linux. Ubuntu, Kali, etc., are variant of Debian. CentOS vs Debian both are used as internet servers or web servers like web, email, FTP, etc.
 
 ## Difference between APT and Aptitude
 
