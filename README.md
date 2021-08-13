@@ -4,6 +4,10 @@ This project aims to introduce you to the world of virtualization.
 
 Take your time for truly understand the purpose of each commands.
 
+If this tutorial has helped you, feel free to leave a star ! 
+
+## Final Grade 125/100
+
 ## Installation
 
 The latest stable version of Debian is Debian 10 Buster. Download latest debian version on this [link](https://www.debian.org/).
