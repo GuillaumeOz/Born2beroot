@@ -2,6 +2,9 @@
 
 This project aims to introduce you to the world of virtualization.
 
+Welcome to Born2be"autoroot"
+# 🛣️ 🏎️ 💨
+
 Take your time for truly understand the purpose of each commands.
 
 If this tutorial has helped you, feel free to leave a star ! 
@@ -12,6 +15,7 @@ If this tutorial has helped you, feel free to leave a star !
 
 The latest stable version of Debian is Debian 10 Buster. Download latest debian version on this [link](https://www.debian.org/).
 
+Warning : Before watching the video, don't forget setup your root password with secure politic (see Step 1: Setting Up a Strong Password Policy section).
 Please visit this [link](https://www.youtube.com/watch?v=2w-2MX5QrQw&ab_channel=hanshazairi) for watching a Virtual Machine installation walkthrough.
 
 Thanks to hbaddrul for this tutorial.
@@ -257,28 +261,7 @@ Finally, it should look like the below:
 
 	password        requisite                       pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
 
-### Step 2: Creating a New User
-
-Create new user via `sudo adduser <username>`.
-
-	$>sudo adduser new_user
-
-Verify whether user was successfully created via `getent passwd <username>`.
-
-	$>getent passwd <username>
-
-Verify newly-created user's password expiry information via `sudo chage -l <username>`.
-
-	$ sudo chage -l <username>
-	Last password change					: <last-password-change-date>
-	Password expires					: <last-password-change-date + PASS_MAX_DAYS>
-	Password inactive					: never
-	Account expires						: never
-	Minimum number of days between password change		: <PASS_MIN_DAYS>
-	Maximum number of days between password change		: <PASS_MAX_DAYS>
-	Number of days of warning before password expires	: <PASS_WARN_AGE>
-
-### Step 3: Creating a New Group
+### Step 2: Creating a New Group
 
 Create new _user42_ group via `sudo addgroup user42`.
 
@@ -548,3 +531,28 @@ SELinux (Security-Enhanced Linux) is a security architecture for Linux® systems
 AppArmor (Application Armor) est un logiciel de sécurité pour Linux édité sous Licence publique générale GNU.
 
 AppArmor permet à l'administrateur système d'associer à chaque programme un profil de sécurité qui restreint ses accès au système d'exploitation. Il complète le traditionnel modèle d'Unix du contrôle d'accès discrétionnaire (DAC, Discretionary access control) en permettant d'utiliser le contrôle d'accès obligatoire (MAC, Mandatory access control).
+
+### How to create a New User ?
+
+Create new user via `sudo adduser <username>`.
+
+	$>sudo adduser <username>
+
+Verify whether user was successfully created via `getent passwd <username>`.
+
+	$>getent passwd <username>
+
+Verify newly-created user's password expiry information via `sudo chage -l <username>`.
+
+	$ sudo chage -l <username>
+	Last password change					: <last-password-change-date>
+	Password expires					: <last-password-change-date + PASS_MAX_DAYS>
+	Password inactive					: never
+	Account expires						: never
+	Minimum number of days between password change		: <PASS_MIN_DAYS>
+	Maximum number of days between password change		: <PASS_MAX_DAYS>
+	Number of days of warning before password expires	: <PASS_WARN_AGE>
+
+At least for delete user via `sudo userdel <username>`.
+
+	$>sudo userdel <username>
