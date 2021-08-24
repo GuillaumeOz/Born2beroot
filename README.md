@@ -15,7 +15,7 @@ If this tutorial has helped you, feel free to leave a star !
 
 The latest stable version of Debian is Debian 10 Buster. Download latest debian version on this [link](https://www.debian.org/).
 
-Warning : Before watching the video, don't forget setup your root password with secure politic (see Step 1: Setting Up a Strong Password Policy section).
+Warning : Before watching the video, don't forget to setup your root password with secure politic (see Step 1: Setting Up a Strong Password Policy section).
 Please visit this [link](https://www.youtube.com/watch?v=2w-2MX5QrQw&ab_channel=hanshazairi) for watching a Virtual Machine installation walkthrough.
 
 Thanks to hbaddrul for this tutorial.
