@@ -128,19 +128,19 @@ Configure SSH via `sudo vi /etc/ssh/sshd_config`.
 
 To set up SSH using Port 4242, replace below line:
 
-	line13 #Port 22
+	line15 #Port 22
 
 with:
 
-	line13 Port 4242
+	line15 Port 4242
 
 To disable SSH login as root irregardless of authentication mechanism, replace below line
 
-	line32 #PermitRootLogin prohibit-password
+	line34 #PermitRootLogin prohibit-password
 
 with:
 
-	line32 PermitRootLogin no
+	line34 PermitRootLogin no
 
 Check SSH status via `sudo service ssh status`.
 
