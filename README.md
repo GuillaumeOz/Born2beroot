@@ -528,9 +528,9 @@ SELinux (Security-Enhanced Linux) is a security architecture for Linux® systems
 
 ## What is AppArmor ?
 
-AppArmor (Application Armor) est un logiciel de sécurité pour Linux édité sous Licence publique générale GNU.
+AppArmor (Application Armor) is a security software for Linux systems made under GNU General Public License.
 
-AppArmor permet à l'administrateur système d'associer à chaque programme un profil de sécurité qui restreint ses accès au système d'exploitation. Il complète le traditionnel modèle d'Unix du contrôle d'accès discrétionnaire (DAC, Discretionary access control) en permettant d'utiliser le contrôle d'accès obligatoire (MAC, Mandatory access control).
+AppArmor allows the system admin to associate to each program a security profile which limits its' accesses to the operating system. It completes Unix's traditional way of Discretionary access control (DAC) by allowing the use of Mandatory access control (MAC).
 
 ### How to create a New User ?
 
