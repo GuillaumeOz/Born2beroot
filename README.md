@@ -426,15 +426,15 @@ Configure WordPress to reference previously-created MariaDB database & user via 
 
 Replace the below
 
-	line23 define( 'DB_NAME', 'database_name_here' );^M
-	line26 define( 'DB_USER', 'username_here' );^M
-	line29 define( 'DB_PASSWORD', 'password_here' );^M
+	line23 define( 'DB_NAME', 'database_name_here' );
+	line26 define( 'DB_USER', 'username_here' );
+	line29 define( 'DB_PASSWORD', 'password_here' );
 
 with:
 
-	line23 define( 'DB_NAME', '<database-name>' );^M
-	line26 define( 'DB_USER', '<username-2>' );^M
-	line29 define( 'DB_PASSWORD', '<password-2>' );^M
+	line23 define( 'DB_NAME', '<database-name>' );
+	line26 define( 'DB_USER', '<username-2>' );
+	line29 define( 'DB_PASSWORD', '<password-2>' );
 
 ### Step 5: Configuring Lighttpd
 
@@ -482,6 +482,9 @@ To set root folder for FTP-connected user to `/home/<username>/ftp`, add below l
 	$>sudo mkdir /home/<username>/ftp/files
 	$>sudo chown nobody:nogroup /home/<username>/ftp
 	$>sudo chmod a-w /home/<username>/ftp
+
+Add these lines to the top of vsftpd.conf via `sudo vi /etc/vsftpd.conf`.
+
 	<~~~>
 	user_sub_token=$USER
 	local_root=/home/$USER/ftp
@@ -494,7 +497,13 @@ To prevent user from accessing files or using commands outside the directory tre
 To whitelist FTP, add below lines:
 
 	$>sudo vi /etc/vsftpd.userlist
+
+To add your username, save and leave the file, and write the command below:
+
 	$>echo <username> | sudo tee -a /etc/vsftpd.userlist
+
+Add these lines to the file vsftpd.userlist via `sudo vi /etc/vsftpd.userlist`.
+
 	<~~~>
 	userlist_enable=YES
 	userlist_file=/etc/vsftpd.userlist
