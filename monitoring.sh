@@ -10,6 +10,6 @@ echo -ne "#Last boot: "; who | awk '{print $3}' | tr '\n' ' ' && who | awk '{pri
 echo -ne "#LVM use: "; if cat /etc/fstab | grep -q "/dev/mapper/"; then echo "yes"; else echo "no"; fi
 echo -ne "#Connexions TCP : "; cat /proc/net/tcp | wc -l | awk '{print $1-1}' | tr '\n' ' ' && echo "ESTABLISHED"
 echo -ne "#User log : "; w | wc -l | awk '{print$1-2}'
-echo -ne "#Network : "; echo -n "IP " && ip route list | grep default | awk '{print $3}' | tr '\n' ' ' && echo -n "(" && ip link show | grep link/ether | awk '{print $2}' | tr '\n' ')' && printf "\n"
+echo -ne "#Network : "; echo -n "IP " && ip route list | grep link | awk '{print $9}' | tr '\n' ' ' && echo -n "(" && ip link show | grep link/ether | awk '{print $2}' | tr '\n' ')' && printf "\n"
 echo -ne "#Sudo : "; cat /var/log/sudo.log | wc -l | tr '\n' ' ' && echo "cmd"
 printf "\n"
